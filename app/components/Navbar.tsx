@@ -33,10 +33,10 @@ export default function App() {
   ];
   return (
     <Navbar maxWidth="full" isBordered>
-      <NavbarContent className="md:hidden">
+      <NavbarContent className="justify-end md:hidden">
         <NavbarMenuToggle icon={<RxHamburgerMenu color="black" size={25} />} />
       </NavbarContent>
-      <NavbarContent className="sm:hidden" justify="start">
+      <NavbarContent className="sm:hidden" justify="center">
         <NavbarBrand>
           <Logo />
         </NavbarBrand>
@@ -85,11 +85,12 @@ export default function App() {
       <NavbarContent as="div" className="items-center" justify="end">
         <Input
           classNames={{
-            base: "hidden bg-[#DBDBDB] rounded-xl md:flex h-10 w-full md:w-[200px] text-[#000000]  ",
+            base: " bg-[#DBDBDB] rounded-xl  md:flex h-10 w-full lg:w-[300px]  text-[#000000]  ",
             mainWrapper: "h-full",
-            input: "text-small bg-primaryColor",
+            input: "text-small ",
             inputWrapper:
-              "h-full  font-normal bg-primaryColor text-default-500 ",
+              "h-full  font-normal  text-default-500 ",
+              
           }}
           placeholder="Search something..."
           size="sm"
@@ -99,7 +100,7 @@ export default function App() {
       
       </NavbarContent>
 
-      <NavbarMenu className=" bg-primaryColor pt-10">
+      <NavbarMenu className="  pt-10">
         {menuItems.map((item, index) => (
           <NavbarMenuItem key={`${item}-${index}`}>
             <Link
