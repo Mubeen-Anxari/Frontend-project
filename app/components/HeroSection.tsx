@@ -25,7 +25,7 @@ export default function HeroSection() {
             ></div>
 
             {/* Content on top of the background */}
-            <div className="relative z-10 text-center max-w-full px-4">
+            <div className="relative z-10 text-center max-w-full ">
                 <h1 className="text-3xl font-semibold md:text-5xl font-serif lg:text-7xl text-white">
                     The fastest delivery in{" "}
                 </h1>
