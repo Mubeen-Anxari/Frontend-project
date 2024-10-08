@@ -2,8 +2,9 @@
 import React from "react";
 import Image from "next/image";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
-import { AddToCart, removeFromCart } from "../redux/slice"; // Ensure removeFromCart is imported
-export const carts = [
+import { AddToCart, removeFromCart } from "../redux/slice";
+
+ const carts = [
   {
     id: 1,
     image: "/cartPizza.png",
@@ -30,15 +31,12 @@ export const carts = [
   },
 ];
 
-export default function AddToCarts() {
-  
+export default function AddToCartsPage() {  // Component name should not conflict with others
   const cartUser = useAppSelector((state) => state.cart.cart); // Retrieve the cart from Redux store
   const dispatch = useAppDispatch();
 
   return (
     <div>
-      
-
       {carts?.map((item) => {
         const isExit = cartUser?.find((cartItem) => cartItem.id === item.id); // Check if the item exists in the Redux cart
 
