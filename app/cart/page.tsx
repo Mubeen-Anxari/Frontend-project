@@ -143,7 +143,7 @@ export default function AddToCarts() {
                   }}
                   className="bg-[#CA1000] text-white p-2 rounded-full"
                 >
-                  -
+                  +
                 </button>
                 <p>{item.quantity}</p>
                 <button
@@ -152,7 +152,7 @@ export default function AddToCarts() {
                   }}
                   className="bg-[#CA1000] text-white p-2 rounded-full"
                 >
-                  +
+                  -
                 </button>
               </div>
             </div>

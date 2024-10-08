@@ -82,7 +82,7 @@ export default function AddToCartsPage() {  // Component name should not conflic
                       onClick={() => {
                         dispatch(AddToCart({ ...item, quantity: 1 }));
                       }}
-                      className="bg-[#CA1000]   text-white p-4 rounded-full"
+                      className="bg-[#CA1000]    text-white p-4 rounded-full"
                     >
                       Add to Cart
                     </button>
