@@ -77,7 +77,7 @@ export default function Menu() {
               <div className="flex gap-2 items-center">
                 <Image
                   className="w-16 h-16 md:w-12 md:h-12 lg:w-24 lg:h-24"
-                  src="/pasta.png"
+                  src="/Pasta.png"
                   width={96}
                   height={96}
                   alt="Pasta"
