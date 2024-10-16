@@ -1,118 +1,108 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import { AddToCart, removeFromCart } from "../redux/slice";
+import { getAllProducts } from "../util";
+import { Product } from "../types/products";
+import { useRouter } from "next/navigation";
+import { doc, setDoc } from "firebase/firestore";
+import { db } from "../config/firebase";
+import { useAuth } from "../components/context/AuthContext";
 
- const carts = [
-  {
-    id: 1,
-    image: "/cartPizza.png",
-    pizzaName: "Margherita pizza",
-    pizzaPrice: 60,
-    pizzaDescription:
-      "Pepperoni sausage, Cheese pizza, Red bell pepper, Ketchup, Thyme, Tomato",
-  },
-  {
-    id: 2,
-    image: "/pizza4.png",
-    pizzaName: "Pepperoni pizza",
-    pizzaPrice: 55,
-    pizzaDescription:
-      "Pepperoni sausage, Cheese pizza, Red bell pepper, Ketchup, Thyme, Tomato",
-  },
-  {
-    id: 3,
-    image: "/cartPizza2.png",
-    pizzaName: "Vegetables pizza",
-    pizzaPrice: 50,
-    pizzaDescription:
-      "Pepperoni sausage, Cheese pizza, Red bell pepper, Ketchup, Thyme, Tomato",
-  },
-];
-
-export default function AddToCartsPage() {  // Component name should not conflict with others
-  const cartUser = useAppSelector((state) => state.cart.cart); // Retrieve the cart from Redux store
+export default function AddToCartsPage() {
+  const cartUser = useAppSelector((state) => state.cart.cart);
   const dispatch = useAppDispatch();
+  const [products, setProducts] = useState<Product[]>([]);
+  const { currentUser } = useAuth();
 
+  const fetchProducts = async () => {
+    try {
+      const products = await getAllProducts();
+      setProducts(products as Product[]);
+    } catch (error) {
+      console.error("Error fetching products:", error);
+    }
+  };
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+
+  
+
+  if (products.length === 0) {
+    return <div>Loading products...</div>;
+  }
   return (
-    <div>
-      {carts?.map((item) => {
-        const isExit = cartUser?.find((cartItem) => cartItem.id === item.id); // Check if the item exists in the Redux cart
-
-        return (
-          <div key={item.id}>
-            <div className="flex flex-col flex-1 overflow-scroll gap-4">
-              <div className="flex mt-10">
-                <h1 className="ml-10 text-3xl font-bold text-[#000000]">
-                  Popular Pizzas of Naples
-                </h1>
+    <div className="container mx-auto px-4 py-8">
+      <h1 className="text-3xl font-bold text-center mb-8">
+        Popular Pizzas of Naples
+      </h1>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {products.map((item) => {
+          const isExist = cartUser?.find(
+            (cartItem) => cartItem?.id === item?.id
+          ) || { quantity: 0 };
+          return (
+            <div
+              key={item.id}
+              className="bg-white rounded-lg shadow-md overflow-hidden flex flex-col"
+            >
+              <div className="flex h-[384px] justify-center items-center overflow-hidden">
+                <Image
+                  className="rounded-lg"
+                  src={item.image}
+                  height={384}
+                  width={384}
+                  alt={item.name}
+                />
               </div>
-              <div className="flex">
-                <div className="w-1/5"></div>
-                <div className="flex justify-around bg-[#67666A] w-4/5">
-                  <h1 className="font-bold text-white text-2xl">
-                    {item.pizzaName}
-                  </h1>
-                  <h1 className="font-bold text-white">${item?.pizzaPrice}</h1>
+              <div className="p-4 flex-grow flex flex-col justify-between">
+                <div>
+                  <h2 className="text-xl font-semibold mb-2">{item.name}</h2>
+                  <p className="text-gray-600 mb-4">{item.description}</p>
                 </div>
-              </div>
-              <div className="flex bg-[#DEDEDE] py-4 justify-between">
-                <div className="ml-8">
-                  <Image
-                    className="h-64 w-64 md:h-80 md:w-80 lg:h-96 lg:w-96"
-                    src={item.image}
-                    height={384}
-                    width={384}
-                    alt="pizza"
-                  />
-                </div>
-                <div className="flex font-bold text-lg md:text-xl lg:text-2xl mt-20">
-                  <ul className="flex flex-col gap-4 text-[#67666A]">
-                    <div className="flex gap-3">
-                      <p className="mt-2 bg-[#67666A] h-2 w-2 rounded-full"></p>
-                      <li className="w-[250px]">{item?.pizzaDescription}</li>
-                    </div>
-                  </ul>
-                </div>
-
-                <div className="flex items-end">
-                  {!isExit ? (
+                <div className="flex justify-between items-center">
+                  <span className="text-2xl font-bold">${item.price}</span>
+                  {!isExist.quantity ? (
                     <button
-                      onClick={() => {
-                        dispatch(AddToCart({ ...item, quantity: 1 }));
-                      }}
-                      className="bg-[#CA1000]    text-white p-4 rounded-full"
+                      onClick={() =>
+                        dispatch(AddToCart({ ...item, quantity: 1 }))
+                      }
+                      className="bg-[#CA1000] text-white px-4 py-2 rounded-full hover:bg-red-700 transition"
                     >
                       Add to Cart
                     </button>
                   ) : (
-                    <div className="flex gap-2">
+                    <div className="flex items-center gap-2">
                       <button
-                        onClick={() => {
-                          dispatch(AddToCart(item));
-                        }}
-                        className="bg-[#CA1000]  text-white p-2 rounded-full"
-                      >
-                        +
-                      </button>
-                      <p>{isExit?.quantity}</p>
-                      <button
-                        onClick={() => {
-                          dispatch(removeFromCart(item));
-                        }}
-                        className="bg-[#CA1000]  text-white p-2 rounded-full"
+                        onClick={() => dispatch(removeFromCart(item))}
+                        className="bg-[#CA1000] text-white w-8 h-8 rounded-full hover:bg-red-700 transition"
                       >
                         -
+                      </button>
+                      <span className="font-semibold">{isExist.quantity}</span>
+                      <button
+                        onClick={() =>
+                          dispatch(
+                            AddToCart({
+                              ...item,
+                              quantity: isExist.quantity + 1,
+                            })
+                          )
+                        }
+                        className="bg-[#CA1000] text-white w-8 h-8 rounded-full hover:bg-red-700 transition"
+                      >
+                        +
                       </button>
                     </div>
                   )}
                 </div>
               </div>
             </div>
-          </div>
-        );
-      })}
+          );
+        })}
+      </div>
     </div>
   );
 }
