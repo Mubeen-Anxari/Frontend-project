@@ -10,8 +10,8 @@ import {
   useDisclosure,
 } from "@nextui-org/react";
 import { useRouter } from "next/navigation";
-import SignUp from "./Signup";
-import Login from "./Login";
+import SignUp from "../signup/page";
+import Login from "../login/page";
 
 export default function Auth() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();

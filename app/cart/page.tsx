@@ -17,13 +17,15 @@ import "react-toastify/dist/ReactToastify.css"; // Ensure this import for toast 
 import { addDoc, collection } from "firebase/firestore";
 import { db } from "../config/firebase";
 import { useAuth } from "../components/context/AuthContext";
+import { Router } from "next/router";
+import { useRouter } from "next/navigation";
 
 export default function AddToCarts() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const cartUser = useAppSelector((state) => state.cart);
   const dispatch = useAppDispatch();
   const { currentUser } = useAuth();
-
+const router=useRouter();
   const addOrder = async () => {
     try {
       const orderRef = await addDoc(collection(db, "orders"), {
@@ -60,13 +62,16 @@ export default function AddToCarts() {
 
   console.log(totalAmount);
   console.log("cartUser:", cartUser.cart);
-  
+  const handleCancelOrders = () => {
+    dispatch(clearCart());
+    router.push('/');
+  };
   return (
     <div className="">
       <nav className="bg-sky-600 p-4">
         <div className="container mx-auto flex justify-between items-center">
-          <h1 className="text-white text-3xl font-bold italic">Tasty Pizza</h1>
-          <div className="text-white text-2xl font-bold">
+          <h1 onClick={()=>router.push('/')} className="cursor-pointer text-white text-3xl font-bold italic">Tasty Pizza</h1>
+         {cartUser.cart.length>0? <div className="text-white text-2xl font-bold">
             <Button onPress={onOpen} color="secondary">
               Order Now
             </Button>
@@ -141,6 +146,7 @@ export default function AddToCarts() {
                           onClick={() => {
                             addOrder();
                             onClose();
+                            router.push('/');
                           }}
                           className="bg-purple-800 hover:bg-cyan-600 text-white shadow-lg shadow-indigo-500/20"
                         >
@@ -152,7 +158,7 @@ export default function AddToCarts() {
                 )}
               </ModalContent>
             </Modal>
-          </div>
+          </div>:<></>}
         </div>
       </nav>
       <h1 className="flex justify-center ml-10 mt-10 text-3xl font-bold text-[#000000]">
@@ -163,8 +169,9 @@ export default function AddToCarts() {
       </h1>:<></>}
         {cartUser.cart.length > 0 && (
             <div className="flex justify-center pb-2 mt-4">
-              <Button color="danger" onClick={() => dispatch(clearCart())}>Cancel Orders</Button>
+              <Button color="danger" onClick={handleCancelOrders}>Cancel Orders</Button>
             </div>
+            
           )}
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">

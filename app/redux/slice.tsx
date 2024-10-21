@@ -1,28 +1,33 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { Product } from "../types/products";
 
 export interface CartState {
   cart: Product[];
   products: Product[];
+  isLoggedIn: boolean;
 }
 
 const initialState: CartState = {
   cart: [],
   products: [],
+  isLoggedIn: false,
 };
 
 export const counterSlice = createSlice({
   name: "cart",
   initialState,
   reducers: {
-    AddToCart: (state, action) => {
+    AddToCart: (state, action: PayloadAction<Product>) => {
+      if (!state.isLoggedIn) {
+        // Redirect to login page if not logged in
+        // Note: We can't directly use router.push here, so we'll handle this in the component
+        return;
+      }
       const isExist = state.cart.find((item) => item.id === action.payload.id);
       
       if (!isExist) {
-        // Item does not exist in the cart, add it with quantity 1
         state.cart.push({ ...action.payload, quantity: 1 });
       } else {
-        // Item already exists, increment quantity
         state.cart = state.cart.map((item) => 
           item.id === action.payload.id 
             ? { ...item, quantity: (item.quantity || 1) + 1 } 
@@ -30,15 +35,17 @@ export const counterSlice = createSlice({
         );
       }
     },
-    removeFromCart: (state, action) => {
+    removeFromCart: (state, action: PayloadAction<Product>) => {
+      if (!state.isLoggedIn) {
+        // Redirect to login page if not logged in
+        return;
+      }
       const isExist = state.cart.find((item) => item.id === action.payload.id);
       
       if (isExist) {
         if (isExist.quantity === 1) {
-          // Remove item if quantity is 1
           state.cart = state.cart.filter((item) => item.id !== action.payload.id);
         } else {
-          // Decrease quantity
           state.cart = state.cart.map((item) =>
             item.id === action.payload.id 
               ? { ...item, quantity: item.quantity ? item.quantity - 1 : 1 }
@@ -48,10 +55,13 @@ export const counterSlice = createSlice({
       }
     },
     clearCart: (state) => {
-      state.cart = []
+      state.cart = [];
+    },
+    setLoggedIn: (state, action: PayloadAction<boolean>) => {
+      state.isLoggedIn = action.payload;
     },
   },
 });
 
-export const { AddToCart, removeFromCart ,clearCart} = counterSlice.actions;
+export const { AddToCart, removeFromCart, clearCart, setLoggedIn } = counterSlice.actions;
 export default counterSlice.reducer;

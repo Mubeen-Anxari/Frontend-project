@@ -22,12 +22,6 @@
       "static/chunks/main-app.js",
       "static/css/app/order/page.css",
       "static/chunks/app/order/page.js"
-    ],
-    "/cart/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/css/app/cart/page.css",
-      "static/chunks/app/cart/page.js"
     ]
   }
 }

@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
-import { AddToCart, removeFromCart } from "../redux/slice";
+import { AddToCart, removeFromCart, setLoggedIn } from "../redux/slice";
 import { getAllProducts } from "../util";
 import { Product } from "../types/products";
 import { useRouter } from "next/navigation";
@@ -15,6 +15,7 @@ export default function AddToCartsPage() {
   const dispatch = useAppDispatch();
   const [products, setProducts] = useState<Product[]>([]);
   const { currentUser } = useAuth();
+  const router = useRouter();
 
   const fetchProducts = async () => {
     try {
@@ -24,15 +25,25 @@ export default function AddToCartsPage() {
       console.error("Error fetching products:", error);
     }
   };
+
   useEffect(() => {
     fetchProducts();
-  }, []);
-
-  
+    // Set logged in status based on currentUser
+    dispatch(setLoggedIn(!!currentUser));
+  }, [currentUser, dispatch]);
 
   if (products.length === 0) {
     return <div>Loading products...</div>;
   }
+
+  const handleAddToCart = (item: Product) => {
+    if (!currentUser) {
+      router.push('/login'); // Redirect to login if not logged in
+      return;
+    }
+    dispatch(AddToCart({ ...item, quantity: 1 }));
+  };
+
   return (
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold text-center mb-8">
@@ -66,9 +77,7 @@ export default function AddToCartsPage() {
                   <span className="text-2xl font-bold">${item.price}</span>
                   {!isExist.quantity ? (
                     <button
-                      onClick={() =>
-                        dispatch(AddToCart({ ...item, quantity: 1 }))
-                      }
+                      onClick={() => handleAddToCart(item)}
                       className="bg-[#CA1000] text-white px-4 py-2 rounded-full hover:bg-red-700 transition"
                     >
                       Add to Cart
