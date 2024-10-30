@@ -34,16 +34,11 @@ export default function App() {
 
   const CartUser = useAppSelector((state) => state.cart);
   const menuItems = [
-    "Profile",
-    "Dashboard",
-    "Activity",
-    "Analytics",
-    "System",
-    "Deployments",
-    "My Settings",
-    "Team Settings",
-    "Help & Feedback",
-    "Log Out",
+    "Home",
+    "Menu",
+    "Services",
+    "Contact us",
+    "Shop",
   ];
   console.log(CartUser);
 
