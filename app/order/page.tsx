@@ -3,7 +3,6 @@ import React, { useEffect, useState } from "react";
 import { getOrders } from "../util";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import { Button } from "@nextui-org/react";
 import { deleteDoc, doc } from "firebase/firestore";
 import { db } from "../config/firebase";
@@ -78,11 +77,11 @@ export default function Orders() {
                 <TableCell>{order.status}</TableCell>
                 <TableCell>
                   <Button 
-                    color="danger" 
+                    color={order.status === "pending" ? "danger" : "success"} 
                     onClick={() => deleteOrder(order.id)}
                     disabled={isDeleting[order.id]}
                   >
-                    {isDeleting[order.id] ? "Deleting..." : "Delete Order"}
+                    {isDeleting[order.id] ? "Canceling......." : order.status === "pending" ? "Cancel Order" : "Completed Order"}
                   </Button>
                 </TableCell>
               </TableRow>

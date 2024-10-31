@@ -24,13 +24,13 @@ export const counterSlice = createSlice({
         return;
       }
       const isExist = state.cart.find((item) => item.id === action.payload.id);
-      
+
       if (!isExist) {
         state.cart.push({ ...action.payload, quantity: 1 });
       } else {
-        state.cart = state.cart.map((item) => 
-          item.id === action.payload.id 
-            ? { ...item, quantity: (item.quantity || 1) + 1 } 
+        state.cart = state.cart.map((item) =>
+          item.id === action.payload.id
+            ? { ...item, quantity: (item.quantity || 1) + 1 }
             : item
         );
       }
@@ -41,13 +41,15 @@ export const counterSlice = createSlice({
         return;
       }
       const isExist = state.cart.find((item) => item.id === action.payload.id);
-      
+
       if (isExist) {
         if (isExist.quantity === 1) {
-          state.cart = state.cart.filter((item) => item.id !== action.payload.id);
+          state.cart = state.cart.filter(
+            (item) => item.id !== action.payload.id
+          );
         } else {
           state.cart = state.cart.map((item) =>
-            item.id === action.payload.id 
+            item.id === action.payload.id
               ? { ...item, quantity: item.quantity ? item.quantity - 1 : 1 }
               : item
           );
@@ -63,5 +65,6 @@ export const counterSlice = createSlice({
   },
 });
 
-export const { AddToCart, removeFromCart, clearCart, setLoggedIn } = counterSlice.actions;
+export const { AddToCart, removeFromCart, clearCart, setLoggedIn } =
+  counterSlice.actions;
 export default counterSlice.reducer;

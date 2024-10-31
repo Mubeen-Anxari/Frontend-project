@@ -34,6 +34,7 @@ const router=useRouter();
         totalItems,
         userId: currentUser?.uid,
         createdAt: new Date(),
+        status: "success", // Added status field with default value
       });
       console.log("Order added with ID: ", orderRef.id);
       dispatch(clearCart()); // Clear the cart after successful order

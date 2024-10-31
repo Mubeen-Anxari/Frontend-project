@@ -30,15 +30,15 @@ import { auth } from "../config/firebase";
 
 export default function App() {
   const { currentUser } = useAuth();
-  console.log('current',currentUser);
+  console.log("current", currentUser);
 
   const CartUser = useAppSelector((state) => state.cart);
   const menuItems = [
-    "Home",
-    "Menu",
-    "Services",
-    "Contact us",
-    "Shop",
+    { name: "Home", link: "/home" },
+    { name: "Menu", link: "/menu" },
+    { name: "Services", link: "/services" },
+    { name: "Contact us", link: "/contact" },
+    { name: "Shop", link: "/shop" },
   ];
   console.log(CartUser);
 
@@ -129,9 +129,9 @@ export default function App() {
                     as="button"
                     className="transition-transform"
                     color="secondary"
-                    name={currentUser?.displayName??""}
+                    name={currentUser?.displayName ?? ""}
                     size="sm"
-                    src={currentUser.photoURL??""}
+                    src={currentUser.photoURL ?? ""}
                   />
                 </DropdownTrigger>
                 <DropdownMenu aria-label="Profile Actions" variant="flat">
@@ -139,7 +139,11 @@ export default function App() {
                     <p className="font-semibold">Signed in as</p>
                     <p className="font-semibold">{currentUser?.email}</p>
                   </DropdownItem>
-                  <DropdownItem onClick={() => signOut(auth)} key="logout" className="h-14 gap-2">
+                  <DropdownItem
+                    onClick={() => signOut(auth)}
+                    key="logout"
+                    className="h-14 gap-2"
+                  >
                     Log Out
                   </DropdownItem>
                 </DropdownMenu>
@@ -166,7 +170,6 @@ export default function App() {
                 }
                 href="#"
               >
-                {item}
               </Link>
             </NavbarMenuItem>
           ))}
